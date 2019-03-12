@@ -11,11 +11,13 @@ import scipy.io.wavfile
 import soundfile as sf
 import numpy as np
 import decorr_toolbox as dt
-import utils.test_tone_generator as ttg
 
 
 
-def s3a_decorrelator(input_file, output_filename, duration = None, make_mono = False, fs = 48000, **kwargs):
+def s3a_decorrelator(input_file, output_filename, preset = 'diffuse', duration = None, make_mono = False, fs = 48000, **kwargs):
+    
+    decorrelation_arguments = preset_parser (preset, **kwargs)
+    
     if type(input_file)==str:
         audioFile, fs = sf.read(input_file)
     elif type(input_file)==np.ndarray:
@@ -33,49 +35,47 @@ def s3a_decorrelator(input_file, output_filename, duration = None, make_mono = F
         audioIn = audioMulti
 
     # Split either the mono audio into components or the stereo audio into components to compare mono and stereo upmixes.
-    audioOut = phdc.s3a_audio_decorrelator(audioIn, **kwargs)
+    audioOut = phdc.s3a_audio_decorrelator(audioIn, **decorrelation_arguments)
     scipy.io.wavfile.write(output_filename, fs, audioOut)
-    return audioOut
+
+    pass
 
 
-def s3a_decorrelator_presets (input_file, output_filename, preset = 'diffuse', duration = None, make_mono = False, **kwargs):
+def preset_parser (preset, **additional_kwargs):
     
     
-    kw_args = dict()
+    preset_kwargs = dict()
+    
     
     if preset == 'upmix':
-        kw_args['transient_decorrelation_method'] = dt.Copier
+        preset_kwargs['transient_decorrelation_method'] = dt.Copier
+
         
     elif preset == 'diffuse':
-        kw_args['transient_decorrelation_method'] = dt.TransientPanner
+        preset_kwargs['transient_decorrelation_method'] = dt.TransientPanner
 
     elif preset == 'upmix_mono_LRCSLsRs':
-        kw_args['transient_decorrelation_method'] = dt.Copier
-        kw_args['num_out_chans'] = 6
-        kw_args['transient_routing'] = [2]
-        kw_args['steady_state_routing'] = [0, 1, 2, 4, 5]
-        make_mono = True
+        preset_kwargs['transient_decorrelation_method'] = dt.Copier
+        preset_kwargs['num_out_chans'] = 6
+        preset_kwargs['transient_routing'] = [2]
+        preset_kwargs['steady_state_routing'] = [0, 1, 2, 4, 5]
         
     elif preset == 'upmix_stereo_LRCSLsRs':
-        kw_args['transient_decorrelation_method'] = dt.TransientPanner
-        kw_args['num_out_chans'] = 6
-        kw_args['transient_routing'] = [0, 1]
-        kw_args['steady_state_routing'] = [0, 1, 2, 4, 5]    
-        make_mono = False
+        preset_kwargs['transient_decorrelation_method'] = dt.TransientPanner
+        preset_kwargs['num_out_chans'] = 6
+        preset_kwargs['transient_routing'] = [0, 1]
+        preset_kwargs['steady_state_routing'] = [0, 1, 2, 4, 5]    
  
     elif preset == 'upmix_lauridsen4':
-        kw_args['transient_decorrelation_method'] = dt.Copier
-        kw_args['harmonic_decorrelation_method'] = dt.Lauridsen
-        kw_args['harmonic_decorrelation_arguments'] = dict(filterLength = 10)
-        kw_args['noise_decorrelation_method'] = dt.Lauridsen
-        kw_args['noise_decorrelation_arguments'] = dict(filterLength = 10)
+        preset_kwargs['transient_decorrelation_method'] = dt.Copier
+        preset_kwargs['harmonic_decorrelation_method'] = dt.Lauridsen
+        preset_kwargs['harmonic_decorrelation_arguments'] = dict(filterLength = 10)
+        preset_kwargs['noise_decorrelation_method'] = dt.Lauridsen
+        preset_kwargs['noise_decorrelation_arguments'] = dict(filterLength = 10)
     
-    audioOut = s3a_decorrelator(input_file, 
-                             output_filename,
-                             duration = duration, 
-                             make_mono = make_mono,
-                             **kw_args)
     
-    return audioOut
+    allkwargs = {**preset_kwargs, **additional_kwargs}
+    
+    return allkwargs
 
     
