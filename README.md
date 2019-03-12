@@ -36,8 +36,9 @@ The simplest example is
 ```
 import s3a-decorrelator as s3a
 
-s3a.s3a_decorrelator('Folder/mono_input_file.wav',
-'folder/subfolder/output_filename.wav')
+s3a.s3a_decorrelator('/folder/input_file.wav',
+'/folder/subfolder/output_filename.wav', make_mono = True)
 ```
+This will take a wav called `input_file.wav`, convert it to mono if required (because of the `make_mono = True` argument) and then upmix the mono signal to stereo (the default) and finally saving the output file as `output_filename.wav`.
 
-The file `Examples/demo_s3a_decorrelator.py ` includes some more demonstrations of general upmix.
+The file `examples/demo_s3a_decorrelator.py` includes some more demonstrations of general upmix.
