@@ -2,3 +2,4 @@
 *.wav
 *.reapeaks
 *.pyc
+dist
