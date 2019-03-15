@@ -2,17 +2,23 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Dec 17 15:02:26 2018
-Python Material Generator.
-@author: mike
+This file includes some tools to generate audio of arbitrary number of channels using looping with offsets.
+
+Replace the audio file names with appropriate filenames on your system.
+
+The reverb is a nice way to get channels with as low correlation as possible for reverberation.
+I use anechoic orchestral recordings from [1]
+
+[1] J. Pätynen, V. Pulkki, and T. Lokki, “Anechoic Recording System for Symphony Orchestra,” Acta Acustica united with Acustica, vol. 94, no. 6, pp. 856–865, 2008.
+
+@author: Michael Cousins
 """
-import sys
-sys.path.append('/Users/mike/Documents/Code/PythonDecorrelationToolbox')
 
 import acoustics
 import numpy as np
 import soundfile as sf
 import pyloudnorm as pyln
-import decorr_toolbox as dt
+from .. import decorr_toolbox as dt
 
 def addDim(audioIn):
     audioOut = audioIn.reshape(audioIn.shape[0],-1)
@@ -92,7 +98,7 @@ def audiogenerator( numChans = 2, material ='pink', t=10 ,fs =48000, targetloudn
         
         audioIn = audioIn[:l]
         Decorrelator = dt.FauxReverb(audioIn, reverbTime=2, numOutChans = numChans)
-        audioOut = Decorrelator.decorrelateAudio()
+        audioOut = Decorrelator.audio_out
 
     elif material == 'rain':
         audioIn, sr = sf.read('/Users/mike/Documents/Audio/RainAndThunderFieldRecording/Rain_48_16_Static.wav')

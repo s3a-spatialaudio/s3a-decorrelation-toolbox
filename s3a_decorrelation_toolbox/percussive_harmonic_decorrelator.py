@@ -2,25 +2,25 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov 28 21:06:19 2018
-This file allows audio to be decorrelated using the s3a decorrelator. 
+
+This file includes the necessary tools to decorelate transients harmoic and noise components separately.
 
 This includes functions to separate audio into transients, harmonic and noise
 components and then to process these separately using decorrelators in the decorrelation toolbox.
 
-@author: mike
+
+@author: Michael Cousins
 """
 
 
 
 from __future__ import print_function
-import sys
-sys.path.append('/Users/mike/Documents/Code/PythonDecorrelationToolbox')
 
 import numpy as np
 
 import librosa
 import librosa.display
-import decorr_toolbox as dt
+from . import decorr_toolbox as dt
 
 
 def separate_mono_audio(audio, 

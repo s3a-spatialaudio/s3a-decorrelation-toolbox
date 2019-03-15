@@ -2,21 +2,20 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Feb  4 12:02:45 2019
-Testing the decorrelation of differnt test signals that may be used for Task 2 
-experiment 4. Decorrelation methods and anounts for a Percussive Harmonic based 
-decorrelator.
-@author: mike
+Set of tools for generating test tones as were used in my experiments.
+
+Generating sawtooth waves and sine waves as well as chords.
+Addition of envelopes. burst trains and sine wave modualtion.
+
+
+
+@author: Michael Cousins
 """
 
-import sys
-sys.path.append('/Users/mike/Documents/Code/PythonDecorrelationToolbox')
+from . import audio_generators as ag
 
-import percussive_harmonic_decorrelator as phdc
-import utils.audio_generators as ag
-import scipy.io.wavfile
-import soundfile as sf
 import numpy as np
-import decorr_toolbox as dt
+
 
 fs = 48000
 
@@ -103,26 +102,3 @@ def generateSawtoothWave (frequency, duration, fs = 48000):
     t = np.linspace(0, l, num = l)
     sawtooth = 2*(t/a - np.floor(1/2 + t/a))
     return sawtooth
-
-#testAudio = generateChord((440, 880, 1320, 1980, 660, 990 ), duration = 10, waveType = "square" )
-#testAudio = generateNoise(duration= 10)
-#test2 = addSineModulation(testAudio)
-#test3 = convertToBurstTrain(testAudio)
-
-
-#
-#
-#ComponentAudio = phdc.separateMultiAudio(testAudio)
-#
-#Decorrelator = dt.Lauridsen(ComponentAudio['Harmonic'], filterLength = 7 )
-#decorrAudio = Decorrelator.decorrelateAudio()
-#
-#
-#filename = 'Audio/OrigTrainTest.wav'
-#scipy.io.wavfile.write(filename, fs, testAudio)
-#
-#filename = 'Audio/DecorrTrainTest.wav'
-#scipy.io.wavfile.write(filename, fs, decorrAudio)
-#    
-#filename = 'Audio/NoiseTrainTest.wav'
-#scipy.io.wavfile.write(filename, fs, ComponentAudio['Harmonic'])  

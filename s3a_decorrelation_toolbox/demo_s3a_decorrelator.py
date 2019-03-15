@@ -3,10 +3,18 @@
 """
 Created on Tue Mar 12 11:39:52 2019
 Script to Demonstrate the s3a decorrelator
-@author: mike
+
+Takes a stereo file specified using imput_file and decorrelates using different methods.
+
+Some methods will first down mix to mono to demonstrate mono upmix.
+Others will take the stereo and upmix to multichannel.
+
+
+
+@author: Michael Cousins
 """
 
-import s3a_decorrelator as s3a
+from . import s3a_decorrelator as s3a
 
 
 fs = 48000

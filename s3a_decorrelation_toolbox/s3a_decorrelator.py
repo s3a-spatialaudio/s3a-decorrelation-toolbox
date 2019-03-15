@@ -2,15 +2,18 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Jan 22 12:24:03 2019
-Demonstration of the Percussive-Harmonic based decorrelator
-@author: mike
+The functions in this file allow simple use of the s3a_decorrelator.
+They simplify the input arguments and facilitate the use of presets to do common tasks with a single keyword.
+Additional arguments can always be added to do anything custom.
+
+@author: Michael Cousins
 """
 
-import percussive_harmonic_decorrelator as phdc
+from . import percussive_harmonic_decorrelator as phdc
 import scipy.io.wavfile
 import soundfile as sf
 import numpy as np
-import decorr_toolbox as dt
+from . import decorr_toolbox as dt
 
 
 
@@ -36,9 +39,11 @@ def s3a_decorrelator(input_file, output_filename, preset = 'diffuse', duration =
 
     # Split either the mono audio into components or the stereo audio into components to compare mono and stereo upmixes.
     audioOut = phdc.s3a_audio_decorrelator(audioIn, **decorrelation_arguments)
-    scipy.io.wavfile.write(output_filename, fs, audioOut)
+    
+    if output_filename != None:
+        scipy.io.wavfile.write(output_filename, fs, audioOut)
 
-    pass
+    return audioOut
 
 
 def preset_parser (preset, **additional_kwargs):
@@ -53,6 +58,7 @@ def preset_parser (preset, **additional_kwargs):
         
     elif preset == 'diffuse':
         preset_kwargs['transient_decorrelation_method'] = dt.TransientPanner
+
 
     elif preset == 'upmix_mono_LRCSLsRs':
         preset_kwargs['transient_decorrelation_method'] = dt.Copier

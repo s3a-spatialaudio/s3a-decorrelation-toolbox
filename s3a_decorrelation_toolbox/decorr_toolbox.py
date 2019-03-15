@@ -2,17 +2,40 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Jan 17 14:12:22 2019
-Decorrelation Toolbox In Class structure
+Decorrelation Toolbox In Class structure.
+
+Tools for generating the filters as well as structures of decorrelation modules.
+Decorrelation modules allow the input of multichannel audio to upmix to a greater number of channels as well as creating arbitrary numbers of channels when using complementary filters that are usually limited to 2 ouputs per input.
+
+Includes:
+
+Lauridsen: Complementary comb filters [1]
+AllPass: White noise burst FIR filters [2]
+Fink: Complementary Symmetrical White Noise Bursts [3]
+VelvetNoise: Random Implulse FIR filter (sparse noise) [4]
+TransientPanner: Panning individual transients to random loudspeakers.
+FauxReverb: White noise burst with exponential decay. Similar to a perfectly diffuse reverberation tail.
+Copier: No decorrelation. Jut duplication across loudspeakers.
+FreqLauridsen: Complementary comb filters with notches spaced logarithmically with frequency.
+AllPassLauridsen: Complementary filters like Lauridsen but using noise instead of delays.
+
+
+[1] M. R. Schroeder ‘An Artifical Stereophonic Effect Obtained from a Single Audio Source’, Journal of the Audio Engineering Society, Volume 6, Number 2, 1958.
+[2] G. S. Kendall, “The Decorrelation of Audio Signals and Its Impact on Spatial Imagery,” Computer Music Journal, vol. 19, no. 4, p. 71, 1995.
+[3] M. Fink, S. Kraft, U. Zölzer, T. P. Daf. Crew, J. Fourier, and C. Shannon, “Downmmix-compatible Conversion from Mono to Stereo in Time- and Frequency-Domain,” p. 4, 2015.
+[4] B. Alary, A. Politis, and V. Välimäki, “Velvet-Noise Decorrelator,” International Conference on Digital Audio Effects, vol. 21th International Conference on Digital Audio Effects (DAFx–18), p. 7, 2017.
+
+
+
 Example Usage:
     decorrelator = dt.AllPassLauridsen(audioIn, filterLength = amount, numOutChans=layout)
-    audioOut = decorrelator.decorrelateAudio()
+    audioOut = decorrelator.audio_out
     
 @author: Michael Cousins
 """
 from abc import ABCMeta, abstractmethod
 
 import numpy as np
-import utils.plotting_toolbox as pt
 import librosa
 
 
@@ -201,7 +224,6 @@ class AllPass(Decorrelator):
     def decorrelate(self, audio, numOuts):
         """"Decorrelate using AllPass"""
         Filters = self.genAllPass(self.filterLength, numOuts)
-        pt.plot (Filters)
 
         audioOut = np.zeros((len(audio)+self.ms2samp(self.filterLength)-1, numOuts))
         for n in range(numOuts):
@@ -245,7 +267,6 @@ class Lauridsen(Decorrelator):
         """"Decorrelate using Lauridsen. Returns double the number of inputs"""
 
         Filters = self.genFilter(filterLength)
-        pt.plot (Filters)
         numInChans = audio.shape[1]
         numOutChans = (numInChans)*2
         audioDouble= np.concatenate((audio,audio), axis=1)

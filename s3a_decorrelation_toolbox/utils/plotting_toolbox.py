@@ -2,26 +2,15 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jan 30 12:59:03 2019
-Plotting_Toolbox
-Speedy tools for visualising spectra etc.
-@author: mike
+Plotting_Toolbox is an extension of matplotlib to make it a bit quicker to use.
+Speedy tools for visualising spectra and multichannel signals.
+
+@author: Michael Cousins
 """
 
-from __future__ import print_function
-import numpy as np
+
 import matplotlib.pyplot as plt
-
-import librosa
-import librosa.display
-
-import scipy.io.wavfile
 from scipy import signal
-
-
-
-import sys
-sys.path.append('/Users/mike/Documents/Code/PythonDecorrelationToolbox')
-
 
 
 def sPlot (multiChannelAudio, LF = 20, HF = 20000, fs = 48000, nperseg=4096*16):
