@@ -100,19 +100,21 @@ Here is another example. We wish to take the ambience from the surround channels
 
 ```
 import soundfile as sf
+import scipy
 import s3a_decorrelation_toolbox.s3a_decorrelator as s3a
 
 audioFile, fs = sf.read('5.1_input_filename.wav')
 
 surround_Channels = audioFile[:,[4,5]]
 
-audioOut = s3a.s3a_decorrelator(surround_Channels,                  # input a numpy array instead of filename string.
-                                    output_filename = None,         # don't write an output file
-                                    'num_out_chans' = 22,             # output has 22 channels
-                                    'transient_routing' = [4, 5],    # Transients go back to the channels they came from
-                                    make_mono = False)              # Upmix from the 2 channels without summing them to mono first.
+audioOut = s3a.s3a_decorrelator(surround_Channels,          # input a numpy array instead of filename string.
+output_filename = None,     # don't write an output file
+duration = 10,              # only process the first 10 seconds
+num_out_chans = 22,         # output has 22 channels
+transient_routing = [4, 5], # Transients go back to the channels they came from
+make_mono = False)          # Upmix from the 2 channels without summing them to mono first
 
-audioOut[:, [0, 1 ,2 ,3 ]] += audioFile [:, [0, 1 ,2 ,3 ]] #add back in the non-surround channels
+audioOut[:, [0, 1 ,2 ,3 ]] += audioFile [:len(audioOut), [0, 1 ,2 ,3 ]] #add back in the non-surround channels
 
 scipy.io.wavfile.write('output_filename.wav', fs, audioOut)
 ```
