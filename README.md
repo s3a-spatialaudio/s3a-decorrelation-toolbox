@@ -14,14 +14,16 @@ The design and validation of the algorithm is fully described in an academic pap
 
 The algorithm is formed of two stages. The first stage separates the audio into three components; transients, noise and harmonic content. The second then applies different decorrelation on these components to maximise envelopment whilst minimising the addition of artefacts.
 
-## Examples
+## Audio Examples
 Examples will be available [here](http://www.s3a-spatialaudio.org/research/stream-2/decorrelarion "s3a Decorrelation Webpage").
 
 ## Prerequisites
 The decorrelator and toolbox is written in python and requires a python 3 distribution.
 We recommend the Anaconda distribution and this is compatible with other s3a software including VISR. (Although a conda package for the s3a-decorrelation toolbox is not yet available)
 
-The package requires: librosa, pysoundfile, scipy, acoustics, matplotlib and pyloudnorm packages. If you use `pip install` to install the package, these dependencies will also be installed. 
+The package requires: librosa, pysoundfile, scipy, acoustics, matplotlib and pyloudnorm packages. If you use `pip install` to install the package, these dependencies will be installed automatically. 
+
+Tested with python 3.6 and 3.7.
 
 ## Installation
 To install, open a terminal window (command line on windows) and use the command
@@ -37,7 +39,17 @@ import s3a_decorrelation_toolbox.s3a_decorrelator as s3a
 s3a.s3a_decorrelator('/folder/input_file.wav',
 '/folder/output_filename.wav', make_mono = True, duration = 10)
 ```
-This will take a wav called `input_file.wav`, convert it to mono if required (because of the `make_mono = True` argument) and then upmix the first 10 seconds (`duration = 10`) of the mono signal to stereo (the default) and finally saving the output file as `output_filename.wav`.
+or 
+```
+import s3a_decorrelation_toolbox.s3a_decorrelator as s3a
+
+s3a.s3a_decorrelator('/folder/input_file.wav',
+'/folder/output_filename.wav', preset = 'upmix', make_mono = True, duration = 10)
+```
+
+This will take a wav called `input_file.wav`, convert it to mono if required (because of the `make_mono = True` argument) and then upmix the first 10 seconds (`duration = 10`) of the mono signal to stereo (the default) and finally saving the output file as `output_filename.wav`. 
+
+The optional `preset = 'upmix'` should probably be used for generic audio upmix purposes where the voice should not be diffuse whereas the default (`preset = 'diffuse'`) is more suited to material such as rain and applause which should be diffuse.
 
 The file `examples/demo_s3a_decorrelator.py` includes some more demonstrations of general upmix.
 
@@ -84,20 +96,21 @@ The harmonic and noise components have similar arguments named `harmonic_decorre
 
 Some upmix examples are included in the demo_s3a_decorrelator script.
 
+Here is another example. We wish to take the ambience from the surround channels of a 5.1 input signal, upmix them to a 22 channel loudspeaker system and add back in the original front channels and the transients to their original channels.
 
 ```
 import soundfile as sf
 import s3a_decorrelation_toolbox.s3a_decorrelator as s3a
 
-audioFile, fs = sf.read('input_filename.wav')
+audioFile, fs = sf.read('5.1_input_filename.wav')
 
 surround_Channels = audioFile[:,[4,5]]
 
-audioOut = s3a.s3a_decorrelator(surround_Channels,                  # input a numpy array instead of filemane string.
-                                    output_filename = None,         # dont write an output file
-                                    'num_out_chans' = 2,             # output has 22 channels
+audioOut = s3a.s3a_decorrelator(surround_Channels,                  # input a numpy array instead of filename string.
+                                    output_filename = None,         # don't write an output file
+                                    'num_out_chans' = 22,             # output has 22 channels
                                     'transient_routing' = [4, 5],    # Transients go back to the channels they came from
-                                    make_mono = False)              # Upmix from the 2 channels of 
+                                    make_mono = False)              # Upmix from the 2 channels without summing them to mono first.
 
 audioOut[:, [0, 1 ,2 ,3 ]] += audioFile [:, [0, 1 ,2 ,3 ]] #add back in the non-surround channels
 
@@ -106,7 +119,7 @@ scipy.io.wavfile.write('output_filename.wav', fs, audioOut)
 
 
 # Future Work
-In the future this code will be proted to a realtime implementation of the separation and filtering stages.
+In the future this code will be ported to a realtime implementation of the separation and filtering stages.
 The decorrealtor objects in decorr_toolbox will be updated to instead generate filters an outing matricies for the [VISR convolver](https://cvssp.org/data/s3a/public/VISR/visr_installers/0.12.0/macosx/build_py36/doc/userdoc/html/using-standalone-renderers.html#the-matrix-convolver-renderer "VISR matrix convolver renderer").
 
 

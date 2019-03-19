@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='s3a_decorrelation_toolbox',
-      version='0.2.8',
+      version='0.2.9',
       description='Decorrelation algorithm and toolbox for diffuse sound objects and general upmix',
       long_description=long_description,
       long_description_content_type='text/markdown',
@@ -18,7 +18,7 @@ setup(name='s3a_decorrelation_toolbox',
                         'scipy >= 1.2.1',
                         'soundfile >= 0.10.0',
                         'librosa >= 0.6.3',
-                        'acoustics >= 0.2.0.post2',
+                        'acoustics >=  0.1.2',
                         'pyloudnorm >= 0.0.1',
                         'matplotlib >= 3.0.2'
                         ],
