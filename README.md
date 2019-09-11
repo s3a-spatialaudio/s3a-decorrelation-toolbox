@@ -10,7 +10,7 @@ It was designed to maximise envelopment for diffuse sound objects such as ambien
 The python toolbox in this repository includes the tools needed for offline processing of audio files and includes a range of decorrelation filters.
 
 ## Introduction
-The design and validation of the algorithm is fully described in an academic paper that is currently in progress.  Contact m.cousins@surrey.ac.uk for more information.
+The design and validation of the algorithm is fully described in an academic paper that is currently in progress.  Contact michaelcousins56@gmail.co.uk for more information.
 
 The algorithm is formed of two stages. The first stage separates the audio into three components; transients, noise and harmonic content. The second then applies different decorrelation on these components to maximise envelopment whilst minimising the addition of artefacts.
 
